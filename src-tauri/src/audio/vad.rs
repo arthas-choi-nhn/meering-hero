@@ -56,6 +56,9 @@ impl VadProcessor {
 
 // ── Shared state machine ────────────────────────────────────────────
 
+/// Maximum speech buffer duration before forced flush (5 seconds at 16kHz)
+const MAX_SPEECH_SAMPLES: usize = 16000 * 5;
+
 struct VadStateMachine {
     vad_state: VadState,
     speech_buffer: Vec<f32>,
@@ -112,6 +115,23 @@ impl VadStateMachine {
             }
             VadState::Speech => {
                 self.speech_buffer.extend_from_slice(window);
+
+                // Force flush if speech buffer exceeds max duration
+                if self.speech_buffer.len() >= MAX_SPEECH_SAMPLES {
+                    let segment = SpeechSegment {
+                        samples: std::mem::take(&mut self.speech_buffer),
+                        start_ms: self.current_start_ms,
+                        end_ms: self.current_time_ms(),
+                    };
+                    // Stay in Speech state but reset start for next chunk
+                    self.current_start_ms = self.current_time_ms();
+                    self.silence_counter_ms = 0;
+                    println!(
+                        "[VAD] -> FORCE FLUSH, segment {}ms-{}ms ({} samples)",
+                        segment.start_ms, segment.end_ms, segment.samples.len()
+                    );
+                    return Some(segment);
+                }
 
                 if !is_speech {
                     self.silence_counter_ms += MS_PER_WINDOW;
@@ -189,8 +209,8 @@ pub struct EnergyVad {
 impl EnergyVad {
     fn new() -> Self {
         Self {
-            sm: VadStateMachine::new(300, 500),
-            threshold: 0.03, // Raised to avoid noise triggering Whisper hallucinations
+            sm: VadStateMachine::new(200, 300),
+            threshold: 0.05, // Raised to avoid noise triggering Whisper hallucinations
         }
     }
 
@@ -232,7 +252,7 @@ impl SileroVad {
             .map_err(|e| format!("Failed to load VAD model: {}", e))?;
 
         Ok(Self {
-            sm: VadStateMachine::new(250, 300),
+            sm: VadStateMachine::new(200, 250),
             session,
             state: Array3::<f32>::zeros((2, 1, STATE_DIM)),
             context: vec![0.0f32; CONTEXT_SIZE],

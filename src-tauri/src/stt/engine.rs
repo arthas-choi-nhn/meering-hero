@@ -20,7 +20,7 @@ pub struct TextSegment {
 /// Minimum audio length to attempt transcription (0.3 seconds at 16kHz)
 const MIN_AUDIO_SAMPLES: usize = 4800;
 /// Skip segments where Whisper thinks there's no speech
-const NO_SPEECH_PROB_THRESHOLD: f32 = 0.6;
+const NO_SPEECH_PROB_THRESHOLD: f32 = 0.4;
 
 pub struct SttEngine {
     ctx: WhisperContext,
@@ -78,6 +78,7 @@ impl SttEngine {
         params.set_print_timestamps(false);
         params.set_suppress_blank(true);
         params.set_suppress_nst(true);
+        params.set_no_context(true); // Prevent cross-segment hallucination carry-over
 
         let n_threads = std::thread::available_parallelism()
             .map(|n| (n.get() / 2).max(1) as i32)
