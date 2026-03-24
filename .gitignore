@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+src-tauri/target/
+src-tauri/gen/
+
+# IDE - IntelliJ / WebStorm
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# IDE - VSCode
+.vscode/
+*.code-workspace
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Tauri generated icons (regenerated from app-icon.png)
+src-tauri/icons/
+
+# Models (large binary files)
+src-tauri/resources/*.onnx
+*.mlmodelc/
+
+# Claude Code
+.claude/
+
+# Rust
+**/*.rs.bk
+
+# Logs
+*.log
+npm-debug.log*

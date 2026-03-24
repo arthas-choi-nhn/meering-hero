@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <!-- Background full bleed (macOS applies its own mask) -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <!-- Microphone body -->
+  <rect x="432" y="220" width="160" height="280" rx="80" fill="white" opacity="0.95"/>
+  <!-- Microphone arc -->
+  <path d="M340 480 Q340 620 512 620 Q684 620 684 480" fill="none" stroke="white" stroke-width="40" stroke-linecap="round" opacity="0.9"/>
+  <!-- Microphone stand -->
+  <line x1="512" y1="620" x2="512" y2="720" stroke="white" stroke-width="40" stroke-linecap="round" opacity="0.9"/>
+  <line x1="412" y1="720" x2="612" y2="720" stroke="white" stroke-width="40" stroke-linecap="round" opacity="0.9"/>
+  <!-- Document/text lines (representing meeting notes) -->
+  <line x1="360" y1="800" x2="664" y2="800" stroke="white" stroke-width="24" stroke-linecap="round" opacity="0.5"/>
+  <line x1="400" y1="850" x2="624" y2="850" stroke="white" stroke-width="20" stroke-linecap="round" opacity="0.35"/>
+</svg>
